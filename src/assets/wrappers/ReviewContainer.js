@@ -17,7 +17,7 @@ const Wrapper = styled.main`
     height: 100vh;
   }
   h1 {
-    font-weight: 700;
+    font-weight: 600;
     span {
       color: var(--primary-yellow);
     }
