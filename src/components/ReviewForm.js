@@ -64,9 +64,7 @@ const ReviewForm = () => {
       } else {
         showAlert3seconds('Review posted!', 'success');
         setValues(initialState);
-        setTimeout(() => {
-          nav('/reviews');
-        }, 3000);
+        window.location.reload();
       }
     } catch (error) {
       console.log(error);

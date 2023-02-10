@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { isAuthenticated } from '../api/auth';
 import { getAll } from '../api/reviews';
 import Wrapper from '../assets/wrappers/ReviewContainer';
@@ -7,6 +8,7 @@ import ReviewForm from '../components/ReviewForm';
 
 const Reviews = () => {
   const [reviews, setReviews] = useState([]);
+  const nav = useNavigate();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -31,13 +33,21 @@ const Reviews = () => {
           className='container'
           style={{ marginTop: '5rem', alignItems: 'center' }}
         >
-          <div>
+          <div style={{ display: 'flex' }}>
             <h1 style={{ marginLeft: '35%' }}>REVIEWS</h1>
+            {isAuthenticated() && (
+              <p
+                onClick={() => nav('/myreviews')}
+                style={{ marginLeft: '2rem', cursor: 'pointer' }}
+              >
+                Your reviews
+              </p>
+            )}
           </div>
 
           <main className='grid'>
             {reviews.map((review, i) => {
-              return <Card {...review} key={i} />;
+              return <Card reviewData={review} key={i} />;
             })}
           </main>
         </div>

@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { isAuthenticated } from '../api/auth';
 import { getAllByUser } from '../api/reviews';
 import Wrapper from '../assets/wrappers/ReviewContainer';
@@ -8,6 +9,7 @@ import UpdateForm from '../components/UpdateFrom';
 const UserReviews = () => {
   const [reviews, setReviews] = useState([]);
   const [reviewToUpdate, setReviewToUpdate] = useState({});
+  const nav = useNavigate();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -15,7 +17,6 @@ const UserReviews = () => {
       const response = await getAllByUser(token);
       setReviews(response.data);
     };
-
     fetchData();
   }, []);
 
@@ -32,17 +33,25 @@ const UserReviews = () => {
           className='container'
           style={{ marginTop: '5rem', alignItems: 'center' }}
         >
-          <div>
+          <div style={{ display: 'flex' }}>
             <h1 style={{ marginLeft: '35%' }}>your reviews</h1>
+            {isAuthenticated() && (
+              <p
+                onClick={() => nav('/reviews')}
+                style={{ marginLeft: '2rem', cursor: 'pointer' }}
+              >
+                Reviews
+              </p>
+            )}
           </div>
 
           <main className='grid'>
             {reviews.map((review, i) => {
               return (
                 <Card
-                  {...review}
+                  reviewData={review}
                   key={i}
-                  changeReviewToUpdate={(review) => setReviewToUpdate(review)}
+                  setReviewToUpdate={setReviewToUpdate}
                 />
               );
             })}

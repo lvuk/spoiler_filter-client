@@ -6,7 +6,7 @@ import { useEffect, useState } from 'react';
 import { remove } from '../api/reviews';
 import { isAuthenticated } from '../api/auth';
 
-const Card = (reviewData, changeReviewToUpdate) => {
+const Card = ({ reviewData, setReviewToUpdate }) => {
   const { movie, review, grade, username, is_spoiler, id } = reviewData;
   const [showReview, setShowReview] = useState(true);
 
@@ -43,7 +43,10 @@ const Card = (reviewData, changeReviewToUpdate) => {
               <div>
                 <p>
                   {grade} <FaStar style={{ color: 'var(--primary-yellow)' }} />
-                  {' ' + username}
+                  {window.location.href ===
+                  `${process.env.REACT_APP_CLIENT_URL}/myreviews`
+                    ? ''
+                    : ' ' + username}
                 </p>
               </div>
               {window.location.href ===
@@ -56,7 +59,7 @@ const Card = (reviewData, changeReviewToUpdate) => {
 
               {window.location.href ===
                 `${process.env.REACT_APP_CLIENT_URL}/myreviews` && (
-                <FaEdit onClick={() => changeReviewToUpdate(reviewData)} />
+                <FaEdit onClick={() => setReviewToUpdate(reviewData)} />
               )}
             </div>
           </header>

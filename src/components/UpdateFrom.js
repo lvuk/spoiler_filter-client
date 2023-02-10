@@ -26,7 +26,7 @@ const fillColorArray = [
   '#f1d045',
 ];
 
-const UpdateForm = (reviewObj) => {
+const UpdateForm = ({ reviewObj }) => {
   const [values, setValues] = useState(initialState);
   const nav = useNavigate();
   const [alert, setAlert] = useState({
@@ -36,7 +36,15 @@ const UpdateForm = (reviewObj) => {
   });
 
   useEffect(() => {
-    setValues({ ...reviewObj });
+    console.log(reviewObj);
+    if (JSON.stringify(reviewObj) !== '{}') {
+      const { movie, review, grade } = reviewObj;
+      values.movie = movie;
+      values.review = review;
+      values.grade = grade;
+    } else {
+      setValues(initialState);
+    }
   }, [reviewObj]);
 
   const handleChange = (e) => {
@@ -59,6 +67,8 @@ const UpdateForm = (reviewObj) => {
     const updatedReview = { movie, review, grade };
     const token = isAuthenticated();
 
+    console.log(updatedReview);
+
     try {
       const response = await update(reviewObj.id, token, updatedReview);
       console.log(response);
@@ -67,10 +77,7 @@ const UpdateForm = (reviewObj) => {
         showAlert3seconds(response.data, 'danger');
       } else {
         showAlert3seconds('Review updated!', 'success');
-        setValues(initialState);
-        setTimeout(() => {
-          nav('/myreviews');
-        }, 3000);
+        window.location.reload();
       }
     } catch (error) {
       console.log(error);
