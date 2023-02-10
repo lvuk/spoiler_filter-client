@@ -1,13 +1,40 @@
 import Wrapper from '../assets/wrappers/Review';
-import { FaStar } from 'react-icons/fa';
+import { FaStar, FaEdit } from 'react-icons/fa';
+import { RiDeleteBin6Line } from 'react-icons/ri';
+import SpoilerImg from './SpoilerImg';
+import { useEffect, useState } from 'react';
+import { remove } from '../api/reviews';
+import { isAuthenticated } from '../api/auth';
 
-const Card = (reviewData) => {
-  const { movie, review, grade, user_id } = reviewData;
-  let is_spoiler = false;
+const Card = (reviewData, changeReviewToUpdate) => {
+  const { movie, review, grade, username, is_spoiler, id } = reviewData;
+  const [showReview, setShowReview] = useState(true);
+
+  useEffect(() => {
+    is_spoiler ? setShowReview(false) : setShowReview(true);
+  }, [is_spoiler]);
+
+  const showSpoilerReview = () => {
+    setShowReview(!showReview);
+  };
+
+  const handleDelete = async () => {
+    const token = isAuthenticated();
+    try {
+      const response = await remove(id, token);
+      if (response.status === 204) {
+        console.log('deleted');
+        window.location.reload(false);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
     <Wrapper>
-      {is_spoiler ? (
-        <h1>SPOILER</h1>
+      {!showReview ? (
+        <SpoilerImg showSpoilerReview={showSpoilerReview} />
       ) : (
         <div>
           <header>
@@ -16,8 +43,21 @@ const Card = (reviewData) => {
               <div>
                 <p>
                   {grade} <FaStar style={{ color: 'var(--primary-yellow)' }} />
+                  {' ' + username}
                 </p>
               </div>
+              {window.location.href ===
+                `${process.env.REACT_APP_CLIENT_URL}/myreviews` && (
+                <RiDeleteBin6Line
+                  style={{ color: 'red', marginRight: '1rem' }}
+                  onClick={handleDelete}
+                />
+              )}
+
+              {window.location.href ===
+                `${process.env.REACT_APP_CLIENT_URL}/myreviews` && (
+                <FaEdit onClick={() => changeReviewToUpdate(reviewData)} />
+              )}
             </div>
           </header>
           <div className='content'>

@@ -331,7 +331,9 @@ ul {
   grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
   grid-gap: 20px;
   align-items: center;
-  overflow: auto;
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  hyphens: auto;
 }
 .grid > article {
   border: 1px solid rgb(154, 153, 153);

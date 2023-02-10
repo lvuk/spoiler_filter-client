@@ -3,7 +3,7 @@ import axios from 'axios';
 export const getAll = async () => {
   try {
     const response = await axios.get(
-      `${process.env.REACT_APP_API_URL}/reviews`
+      `${process.env.REACT_APP_API_URL}/reviews?per_page=6&page=1`
     );
     return response;
   } catch (error) {
@@ -11,17 +11,17 @@ export const getAll = async () => {
   }
 };
 
-export const getAllByUser = (userId, token) => {
+export const getAllByUser = (token) => {
   try {
-    const response = axios.delete(
-      `${process.env.REACT_APP_API_URL}/reviews/${userId}`,
+    const response = axios.get(
+      `${process.env.REACT_APP_API_URL}/reviews/list`,
       {
         headers: {
-          Authorization: `Bearer ${token}`,
+          Authorization: token,
         },
       }
     );
-    return response.data;
+    return response;
   } catch (error) {
     return error.response.data;
   }
@@ -33,11 +33,11 @@ export const remove = (reviewId, token) => {
       `${process.env.REACT_APP_API_URL}/reviews/${reviewId}`,
       {
         headers: {
-          Authorization: `Bearer ${token}`,
+          Authorization: token,
         },
       }
     );
-    return response.data;
+    return response;
   } catch (error) {
     return error.response.data;
   }
@@ -48,23 +48,23 @@ export const update = (reviewId, token, review) => {
     const response = axios.put(
       `${process.env.REACT_APP_API_URL}/reviews/${reviewId}`,
       {
-        review,
+        ...review,
       },
       {
         headers: {
-          Authorization: `Bearer ${token}`,
+          Authorization: token,
         },
       }
     );
-    return response.data;
+    return response;
   } catch (error) {
-    return error.response.data;
+    return error.response;
   }
 };
 
 export const create = async (review, token) => {
   console.log({ ...review });
-  console.log(`Bearer ${token}`);
+  console.log(token);
   try {
     const response = await axios.post(
       `${process.env.REACT_APP_API_URL}/reviews`,
@@ -73,16 +73,16 @@ export const create = async (review, token) => {
       },
       {
         headers: {
-          Authorization: `Bearer ${token}`,
+          Authorization: token,
         },
       }
     );
 
-    console.log(response);
+    // console.log(response);
 
-    return response.data;
+    return response;
   } catch (error) {
-    console.log(error);
-    return error.response.data;
+    // console.log(error);
+    return error.response;
   }
 };

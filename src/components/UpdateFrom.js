@@ -1,6 +1,6 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { create } from '../api/reviews';
+import { update } from '../api/reviews';
 import Wrapper from '../assets/wrappers/ReviewForm';
 import Alert from './Alert';
 import FormRow from './FormRow';
@@ -26,7 +26,7 @@ const fillColorArray = [
   '#f1d045',
 ];
 
-const ReviewForm = () => {
+const UpdateForm = (reviewObj) => {
   const [values, setValues] = useState(initialState);
   const nav = useNavigate();
   const [alert, setAlert] = useState({
@@ -34,6 +34,10 @@ const ReviewForm = () => {
     alertType: '',
     visible: false,
   });
+
+  useEffect(() => {
+    setValues({ ...reviewObj });
+  }, [reviewObj]);
 
   const handleChange = (e) => {
     setValues({ ...values, [e.target.name]: e.target.value });
@@ -52,20 +56,20 @@ const ReviewForm = () => {
       showAlert3seconds(alertText, alertType);
     }
 
-    const reviewObj = { movie, review, grade };
+    const updatedReview = { movie, review, grade };
     const token = isAuthenticated();
 
     try {
-      const response = await create(reviewObj, token);
+      const response = await update(reviewObj.id, token, updatedReview);
       console.log(response);
 
       if (response.status !== 201) {
         showAlert3seconds(response.data, 'danger');
       } else {
-        showAlert3seconds('Review posted!', 'success');
+        showAlert3seconds('Review updated!', 'success');
         setValues(initialState);
         setTimeout(() => {
-          nav('/reviews');
+          nav('/myreviews');
         }, 3000);
       }
     } catch (error) {
@@ -88,7 +92,7 @@ const ReviewForm = () => {
   return (
     <Wrapper className='review-form'>
       <form className='form' onSubmit={onSubmit}>
-        <h3>Write a review</h3>
+        <h3>Edit review</h3>
         {alert.visible && <Alert {...alert} />}
         {/* film input */}
         <FormRow
@@ -131,4 +135,4 @@ const ReviewForm = () => {
     </Wrapper>
   );
 };
-export default ReviewForm;
+export default UpdateForm;
